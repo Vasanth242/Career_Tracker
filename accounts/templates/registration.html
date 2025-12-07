@@ -1,0 +1,20 @@
+<!-- templates/register.html -->
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-white dark:from-slate-900">
+    <div class="card w-full max-w-md p-12 shadow-2xl">
+        <h1 class="text-5xl font-bold text-primary text-center mb-10">Create Account</h1>
+        
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full btn-primary text-2xl py-5 font-bold">
+                Register & Start Tracking
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

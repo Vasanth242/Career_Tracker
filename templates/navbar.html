@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard/">Career Tracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/dashboard/">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/goals/">Goals & Tasks</a></li>
+                <li class="nav-item"><a class="nav-link" href="/courses/">Courses</a></li>
+                <li class="nav-item"><a class="nav-link" href="/projects/">Projects</a></li>
+                <li class="nav-item"><a class="nav-link" href="/jobs/">Jobs{% if new_jobs_count %} <span class="badge bg-danger">{{ new_jobs_count }}</span>{% endif %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="/settings/">Settings</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/logout/">Logout</a></li>
+            </ul>
+            {% else %}
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/login/">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="/register/">Register</a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>

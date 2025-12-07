@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Tracker | {% block title %}Dashboard{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        :root { --primary: #FF8C42; --bg:ide: #FFE5B4; --bg: #FFFFFF; --fg: #2D3748; --card: #FFFFFF; --muted: #8A8A8A; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        [data-theme="dark"] { --bg: #0f172a; --fg: #e2e8f0; --card: #1e293b; --muted: #94a3b8; --shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); margin: 0; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--fg); }
+        .text-primary { color: var(--primary); }
+        .btn-primary { background: var(--primary); color: white; padding: 0.75rem 1.75rem; border-radius: 9999px; font-weight: 600; transition: all 0.3s; box-shadow: var(--shadow); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,140,66,0.4); }
+        .card { background: var(--card); border-radius: 1rem; padding: 1.75rem; box-shadow: var(--shadow); transition: all 0.4s; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 30px rgba(0,0,0,0.15); }
+        .badge { background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; }
+        .progress-bar { height: 12px; background: linear-gradient(90deg, var(--primary), #FFD4A3); border-radius: 6px; }
+        @keyframes fillBar { from { width: 0; } to { width: var(--width); } }
+        .nav-link { color: var(--fg); font-weight: 500; position: relative; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -6px; left: 0; background: var(--primary); transition: width 0.3s; }
+        .nav-link:hover { color: var(--primary); }
+        .nav-link:hover::after { width: 100%; }
+        .theme-toggle { width: 50px; height: 26px; background: #cbd5e1; border-radius: 9999px; position: relative; cursor: pointer; }
+        .theme-toggle::before { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform 0.3s; }
+        [data-theme="dark"] .theme-toggle::before { transform: translateX(24px); background: #facc15; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- NAVBAR: Only when logged in -->
+    {% if user.is_authenticated %}
+    <nav class="fixed top-0 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="{% url 'dashboard' %}" class="text-3xl font-bold text-primary">CareerTracker</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                <a href="{% url 'goals' %}" class="nav-link">Goals</a>
+                <a href="{% url 'courses' %}" class="nav-link">Courses</a>
+                <a href="{% url 'projects' %}" class="nav-link">Projects</a>
+                <a href="{% url 'jobs' %}" class="nav-link">Jobs {% if new_jobs_count %}<span class="badge ml-1">{{ new_jobs_count }}</span>{% endif %}</a>
+                <a href="{% url 'settings' %}" class="nav-link">Settings</a>
+                <a href="{% url 'logout' %}" class="text-red-500 nav-link">Logout</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="theme-toggle" id="theme-toggle"></div>
+                <button id="menu-btn" class="md:hidden text-2xl">Menu</button>
+            </div>
+        </div>
+    </nav>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white dark:bg-slate-900 z-40 hidden flex items-center justify-center">
+        <button id="close-menu" class="absolute top-6 right-6 text-4xl">×</button>
+        <div class="text-center space-y-8 text-2xl">
+            <a href="{% url 'dashboard' %}" class="block nav-link">Dashboard</a>
+            <a href="{% url 'goals' %}" class="block nav-link">Goals</a>
+            <a href="{% url 'courses' %}" class="block nav-link">Courses</a>
+            <a href="{% url 'projects' %}" class="block nav-link">Projects</a>
+            <a href="{% url 'jobs' %}" class="block nav-link">Jobs</a>
+            <a href="{% url 'settings' %}" class="block nav-link">Settings</a>
+            <a href="{% url 'logout' %}" class="block text-red-500">Logout</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- MAIN CONTENT - Always one block, no overlap -->
+    <main class="{% if user.is_authenticated %}pt-24{% else %}min-h-screen flex items-center justify-center{% endif %} bg-gray-50 dark:bg-slate-900">
+        <div class="w-full max-w-7xl mx-auto px-6 py-8">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        const toggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        const saved = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', saved);
+        toggle?.addEventListener('click', () => {
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        document.getElementById('menu-btn')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.remove('hidden');
+        });
+        document.getElementById('close-menu')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        });
+    </script>
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

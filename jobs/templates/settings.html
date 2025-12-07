@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Settings • Complete Your Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-5xl font-bold text-primary mb-8 text-center">Complete Your Profile</h1>
+    <p class="text-xl text-center text-muted mb-12">
+        This helps us find <strong>perfect jobs</strong> for you in Singapore, Germany, Finland & more!
+    </p>
+
+    <div class="card p-10">
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <label class="block text-lg font-medium mb-3">Your Name</label>
+                    {{ form.name }}
+                </div>
+                <div>
+                    <label class="block text-lg font-medium mb-3">Current Role</label>
+                    {{ form.current_role }}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-lg font-medium mb-3">Target Countries</label>
+                {{ form.target_countries }}
+                <p class="text-sm text-muted mt-2">e.g., Singapore, Germany, Finland, Switzerland</p>
+            </div>
+
+            <div>
+                <label class="block text-lg font-medium mb-3">Preferred Job Roles</label>
+                {{ form.preferred_roles }}
+                <p class="text-sm text-muted mt-2">e.g., Software Engineer, SDET, QA Automation</p>
+            </div>
+
+            <div>
+                <label class="block text-lg font-medium mb-3">Your Key Skills</label>
+                {{ form.key_skills }}
+                <p class="text-sm text-muted mt-2">e.g., Python, Django, Robot Framework, SQL</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <label class="flex items-center gap-3 text-lg">
+                        {{ form.email_notifications }} Email Alerts for New Jobs
+                    </label>
+                </div>
+                <div>
+                    <label class="block text-lg font-medium mb-3">Daily Reminder Time</label>
+                    {{ form.reminder_time }}
+                </div>
+            </div>
+
+            <div class="text-center pt-8">
+                <button type="submit" class="btn-primary text-xl px-12 py-5">
+                    Save & Fetch My Jobs Now
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center mt-12">
+        <p class="text-muted">
+            After saving, we’ll immediately fetch <strong>real jobs</strong> from MyCareersFuture, StepStone, Relocate.me & more!
+        </p>
+    </div>
+</div>
+{% endblock %}

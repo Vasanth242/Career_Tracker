@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Welcome Card -->
+    <div class="lg:col-span-3 card bg-gradient-to-br from-orange-400 to-orange-500 text-white">
+        <h1 class="text-4xl font-bold mb-2">Welcome back, {{ user.profile.name|default:user.username }}!</h1>
+        <p class="text-xl opacity-90">Keep pushing toward your dream job abroad</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="card">
+        <h3 class="text-2xl font-bold text-primary mb-4">Goals Progress</h3>
+        {% for goal in goals %}
+        <div class="mb-6">
+            <div class="flex justify-between mb-2">
+                <span class="font-medium">{{ goal.title }}</span>
+                <span>{{ goal.progress|floatformat:0 }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                <div class="progress-bar h-3 rounded-full" style="--width: {{ goal.progress }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <h3 class="text-2xl font-bold text-primary mb-4">Quick Stats</h3>
+        <div class="space-y-4 text-lg">
+            <p>Tasks due soon: <strong class="text-primary">{{ tasks_due_soon }}</strong></p>
+            <p>Courses in progress: <strong class="text-primary">{{ courses_in_progress }}</strong></p>
+            <p>Active projects: <strong class="text-primary">{{ projects_active }}</strong></p>
+            <p>New jobs: <strong class="text-primary">{{ new_jobs_count }}</strong></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="text-2xl font-bold text-primary mb-4">Latest Jobs</h3>
+        {% for job in latest_jobs %}
+        <div class="mb-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg">
+            <p class="font-semibold">{{ job.title }}</p>
+            <p class="text-sm text-muted">{{ job.company }} • {{ job.location }}</p>
+            <span class="badge text-xs mt-2 inline-block">{{ job.relevance }}</span>
+        </div>
+        {% empty %}
+        <p class="text-muted">No new jobs yet. Run fetch_jobs command!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
